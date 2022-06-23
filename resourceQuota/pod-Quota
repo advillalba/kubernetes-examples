@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: uat
+  labels:
+    name: uat
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: pod-demo
+  metadata: uat
+spec:
+  hard:
+    pods: "2"

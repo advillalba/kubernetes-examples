@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: c1
+  labels:
+    name: c1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: c1
+  annotations: 
+    kubernetes.io/change-cause: "Change port to 120"
+  name: k8s-hands-on
+  labels:
+    app: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: k8s-hands-on:v2
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 9090
+            name: go-port
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: c1
+  name: k8s-hands-on
+  labels:
+    app: backend
+spec:
+  type: NodePort
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: go-port
